@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.secbase.auth.application.IAuthService;
 import org.secbase.auth.application.dtos.LoginRequest;
 import org.secbase.auth.application.dtos.RegisterRequestDto;
+import org.secbase.auth.domain.Role;
 import org.secbase.auth.domain.Users;
 import org.secbase.auth.infrastructure.JwtService;
 import org.secbase.auth.infrastructure.UserRepository;
@@ -42,6 +43,7 @@ public class AuthService implements IAuthService {
         String hashedPassword = passwordEncoder.encode(registerRequest.password());
         Users user = Users.create(registerRequest.username(), registerRequest.email(), hashedPassword, registerRequest.firstName(), registerRequest.lastName());
 
+        user.addRole(Role.ROLE_USER);
         return this.userRepository.save(user).getId();
     }
 
