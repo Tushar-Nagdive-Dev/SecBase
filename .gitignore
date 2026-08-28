@@ -38,3 +38,4 @@ out/
 .idea
 secbase-structure.txt
 build
+.env

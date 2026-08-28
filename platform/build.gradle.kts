@@ -4,7 +4,6 @@ plugins {
 }
 
 dependencies {
-
     // Internal modules
     implementation(project(":common"))
     implementation(project(":modules:auth"))
@@ -12,10 +11,18 @@ dependencies {
     implementation(project(":modules:credentials"))
     implementation(project(":modules:cli"))
 
-    // Spring Boot
+    // .env reader
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
+
+    // Spring Boot Infrastructure
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-flyway")
+
+    // Modulith runtime
+    implementation("org.springframework.modulith:spring-modulith-starter-core")
+    implementation("org.springframework.modulith:spring-modulith-starter-jdbc")
+    runtimeOnly("org.springframework.modulith:spring-modulith-runtime")
 
     // Database
     implementation("org.flywaydb:flyway-database-postgresql")
@@ -24,17 +31,7 @@ dependencies {
     // OpenAPI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
 
-    // Lombok
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-
-    // Tests
+    // Platform-specific Tests (JDBC/Flyway)
     testImplementation("org.springframework.boot:spring-boot-starter-data-jdbc-test")
     testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-
-    testCompileOnly("org.projectlombok:lombok")
-    testAnnotationProcessor("org.projectlombok:lombok")
-
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
