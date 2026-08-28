@@ -6,9 +6,28 @@ public final class SecBaseApplicationConstants {
         throw new IllegalAccessError("Utility class");
     }
 
+    public static final class ApiConstants {
+        private ApiConstants() {
+            throw new IllegalAccessError("Utility class");
+        }
 
+        public static final String REGISTER = "register";
+        public static final String LOGIN = "login";
+
+        public static final String V3_API_DOCS = "/v3/api-docs/**";
+        public static final String SWAGGER_V3_API_DOCS = "/swagger-ui/**";
+        public static final String SWAGGER_UI_HTML = "/swagger-ui.html";
+        public static final String AUTH_PATH = "api/v1/auth";
+    }
+
+    public static final String FORWARD_SLASH = "/";
+    public static final String MATCH_ALL = "/**";
+    public static final String FORWARD_SLASH_BACKSLASH = "\\";
     public static final Long ONE = 1L;
     public static final String SECBASE = "SecBase";
     public static final String SECBASE_CORE = "SecBase-Core-User";
     public static final String SECBASE_SYSTEM = "SecBase-System-User";
+    public static final String SECBASE_AUTH = "secbase-auth";
+    public static final String SECBASE_ACCESS_TOKEN = "secbase_access_token";
+    public static final String STRICT = "Strict";
 }
