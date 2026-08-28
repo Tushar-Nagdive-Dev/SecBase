@@ -11,8 +11,7 @@ dependencies {
     implementation(project(":modules:credentials"))
     implementation(project(":modules:cli"))
 
-    // .env reader
-    implementation("me.paulschwarz:spring-dotenv:4.0.0")
+    implementation("io.github.cdimascio:dotenv-java:3.2.0")
 
     // Spring Boot Infrastructure
     implementation("org.springframework.boot:spring-boot-starter-webmvc")

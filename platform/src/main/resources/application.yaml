@@ -3,13 +3,13 @@ server:
 
 spring:
   application:
-    name: 'secbase'
+    name: 'SecBase'
 
   datasource:
-    url: jdbc:postgresql://${DATABASE_DOMAIN_NAME}:${DATABASE_PORT}/${DATABASE_NAME}
+    url: ${DATABASE_URL_INITIALS}://${DATABASE_DOMAIN}:${DATABASE_PORT}/${DATABASE_NAME}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
-    driver-class-name: ${DATABASE_DRIVER_NAME}
+    driver-class-name: ${DATABASE_DRIVER}
 
   flyway:
     enabled: true
@@ -30,4 +30,4 @@ springdoc:
 
 jwt:
   secret: ${JWT_SECRET}
-  expiration-hours: ${EXPIRATION_HOURS}
+  expiration-hours: ${JWT_EXPIRY_HOURS}

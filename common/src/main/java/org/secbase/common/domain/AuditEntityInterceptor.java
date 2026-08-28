@@ -1,38 +1,45 @@
 package org.secbase.common.domain;
 
-import org.springframework.context.ApplicationListener;
-import org.springframework.data.relational.core.mapping.event.BeforeConvertEvent;
+import org.jspecify.annotations.NonNull;
+import org.secbase.common.security.SecbasePrincipal;
+import org.springframework.data.relational.core.mapping.event.BeforeConvertCallback;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import static org.secbase.common.constants.SecBaseApplicationConstants.*;
 
 @Component
-public class AuditEntityInterceptor implements ApplicationListener<BeforeConvertEvent<Object>> {
+public class AuditEntityInterceptor implements BeforeConvertCallback<BaseEntity> {
 
     @Override
-    public void onApplicationEvent(BeforeConvertEvent<Object> event) {
-        if (event.getEntity() instanceof BaseEntity entity) {
-            // TODO: Replace these with actual values from SecurityContextHolder
-            Long currentPrincipalId = ONE; // System Admin ID placeholder
-            String currentPrincipalName = SECBASE_SYSTEM;
-            String currentSystem = SECBASE_CORE;
+    public BaseEntity onBeforeConvert(@NonNull BaseEntity aggregate) {
+        // 1. Default to SYSTEM constants for unauthenticated actions
+        Long currentPrincipalId = ONE;
+        String currentPrincipalName = SECBASE_SYSTEM;
+        String currentSystem = SECBASE_CORE;
 
-            // If version is null or 0, it means this is a brand new INSERT
-            if (entity.getVersion() == null || entity.getVersion() == 0) {
-                entity.setCreatedBy(currentSystem);
-                entity.setCreatedId(currentPrincipalId);
-                entity.setCreator(currentPrincipalName);
+        // 2. Safely extract the live authentication from Spring Security
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+            if (authentication.getPrincipal() instanceof SecbasePrincipal principal) {
+                currentPrincipalId = principal.getId();
+                currentPrincipalName = principal.getUsername();
+            } else {
+                currentPrincipalName = authentication.getName();
             }
-
-            // These fields update on every save (both INSERT and UPDATE)
-            entity.setModifiedBy(currentSystem);
-            entity.setModifiedId(currentPrincipalId);
-            entity.setModifier(currentPrincipalName);
         }
-    }
 
-    @Override
-    public boolean supportsAsyncExecution() {
-        return ApplicationListener.super.supportsAsyncExecution();
+        if (aggregate.getVersion() == null || aggregate.getVersion() == 0) {
+            aggregate.setCreatedBy(currentSystem);
+            aggregate.setCreatedId(currentPrincipalId);
+            aggregate.setCreator(currentPrincipalName);
+        }
+
+        aggregate.setModifiedBy(currentSystem);
+        aggregate.setModifiedId(currentPrincipalId);
+        aggregate.setModifier(currentPrincipalName);
+        return aggregate;
     }
 }
