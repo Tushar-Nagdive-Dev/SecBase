@@ -18,6 +18,7 @@ public final class SecBaseApplicationConstants {
         public static final String SWAGGER_V3_API_DOCS = "/swagger-ui/**";
         public static final String SWAGGER_UI_HTML = "/swagger-ui.html";
         public static final String AUTH_PATH = "api/v1/auth";
+        public static final String ADMIN_PATH = "api/v1/admin";
     }
 
     public static final String FORWARD_SLASH = "/";
@@ -30,4 +31,8 @@ public final class SecBaseApplicationConstants {
     public static final String SECBASE_AUTH = "secbase-auth";
     public static final String SECBASE_ACCESS_TOKEN = "secbase_access_token";
     public static final String STRICT = "Strict";
+    public static final String USERNAME = "username";
+    public static final String EMAIL = "email";
+    public static final String ROLES = "roles";
+    public static final String ADMIN = "ADMIN";
 }

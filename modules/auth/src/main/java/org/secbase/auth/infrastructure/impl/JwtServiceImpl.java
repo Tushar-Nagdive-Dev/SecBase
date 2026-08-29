@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static org.secbase.common.constants.SecBaseApplicationConstants.SECBASE_AUTH;
+import static org.secbase.common.constants.SecBaseApplicationConstants.*;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -33,9 +33,9 @@ public class JwtServiceImpl implements JwtService {
         return JWT.create()
                 .withIssuer(SECBASE_AUTH)
                 .withSubject(user.getId().toString())
-                .withClaim("username", user.getUsername())
-                .withClaim("email", user.getEmail())
-                .withClaim("roles", roleNames)
+                .withClaim(USERNAME, user.getUsername())
+                .withClaim(EMAIL, user.getEmail())
+                .withClaim(ROLES, roleNames)
                 .withIssuedAt(now)
                 .withExpiresAt(now.plus(expirationHours, ChronoUnit.HOURS))
                 .sign(algorithm);

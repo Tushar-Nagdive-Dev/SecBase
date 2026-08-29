@@ -9,9 +9,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.secbase.common.constants.SecBaseApplicationConstants.*;
 import static org.secbase.common.constants.SecBaseApplicationConstants.ApiConstants.*;
-import static org.secbase.common.constants.SecBaseApplicationConstants.FORWARD_SLASH;
-import static org.secbase.common.constants.SecBaseApplicationConstants.MATCH_ALL;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(FORWARD_SLASH+AUTH_PATH+MATCH_ALL).permitAll()
                         .requestMatchers(V3_API_DOCS, SWAGGER_V3_API_DOCS, SWAGGER_UI_HTML).permitAll()
+                        .requestMatchers(FORWARD_SLASH+ADMIN_PATH+MATCH_ALL).hasRole(ADMIN)
                         .anyRequest().authenticated());
 
         return http.build();
