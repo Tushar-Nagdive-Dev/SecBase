@@ -39,3 +39,7 @@ out/
 secbase-structure.txt
 build
 .env
+node_modules
+.angular
+dist
+package-lock.json
