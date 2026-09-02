@@ -1,0 +1,64 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-bl from-amber-50 to-cyan-100 p-4 relative overflow-hidden text-slate-900">
+
+  <!-- Sketchy background accents -->
+  <div class="absolute top-10 left-10 text-cyan-300 opacity-60 text-9xl transform -rotate-6 pointer-events-none">+</div>
+  <div class="absolute bottom-10 right-10 text-orange-300 opacity-50 text-9xl transform rotate-12 pointer-events-none">*</div>
+
+  <!-- The Registration Card -->
+  <mat-card class="w-full max-w-2xl p-6 md:p-10 z-10 bg-white border-2 border-black">
+
+    <mat-card-header class="flex flex-col items-center text-center w-full mb-8">
+      <div class="w-16 h-16 bg-orange-200 rounded-full border-2 border-black flex items-center justify-center text-3xl mb-4 shadow-[2px_2px_0px_#000]">
+        ⚡
+      </div>
+      <mat-card-title class="text-4xl font-extrabold mb-2">Initialize SECBASE</mat-card-title>
+      <mat-card-subtitle class="text-lg text-slate-600 font-semibold">Generate your zero-knowledge profile.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+
+        <!-- Two-column grid for Names -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label class="font-bold">First Name</mat-label>
+            <input matInput formControlName="firstName" placeholder="John">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label class="font-bold">Last Name</mat-label>
+            <input matInput formControlName="lastName" placeholder="Doe">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label class="font-bold">Unique Username</mat-label>
+          <input matInput formControlName="username" placeholder="johndoe_secure">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label class="font-bold">Email Address</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="john@secbase.org">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label class="font-bold">Master Password</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="••••••••">
+          <mat-hint class="font-bold text-orange-600 mt-1">If you lose this, your secrets are gone forever.</mat-hint>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid" class="py-6 text-xl font-bold bg-cyan-400 w-full mt-4">
+          GENERATE MASTER KEY
+        </button>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="justify-center mt-6 pb-2">
+      <a routerLink="/auth/signin" class="text-slate-700 hover:text-cyan-600 font-bold underline decoration-wavy underline-offset-4 transition-colors">
+        Already have a vault? Access it here.
+      </a>
+    </mat-card-actions>
+
+  </mat-card>
+</div>
