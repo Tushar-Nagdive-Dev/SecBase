@@ -1,0 +1,86 @@
+/* 1. ANGULAR MATERIAL CORE (Must be first!) */
+@use '@angular/material' as mat;
+/* 2. HAND-DRAWN FONT IMPORT */
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$cyan-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      // INJECT ILLUSTRATIVE FONT INTO MATERIAL
+      typography: "'Architects Daughter', cursive", 
+      density: 0,
+    )
+  );
+}
+
+/* GLOBAL SKETCH VARIABLES */
+:root {
+  --sketch-border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  --sketch-border-radius-alt: 15px 225px 15px 255px / 255px 15px 225px 15px;
+  --sketch-shadow: 4px 4px 0px #000;
+  --sketch-shadow-hover: 6px 6px 0px #000;
+  --sketch-border: 2px solid #000;
+}
+
+body {
+  color-scheme: light;
+  /* Use a slightly textured off-white "paper" background instead of default surface */
+  background-color: #fdfbf7; 
+  color: #000;
+  font-family: 'Architects Daughter', cursive;
+  margin: 0;
+  height: 100%;
+}
+
+/* ==========================================================================
+   HAND-DRAWN COMPONENT OVERRIDES
+   ========================================================================== */
+
+/* Buttons: Comic-book solid shadows and irregular borders */
+.mat-mdc-button, 
+.mat-mdc-raised-button, 
+.mat-mdc-unelevated-button,
+.mat-mdc-outlined-button {
+  border: var(--sketch-border) !important;
+  border-radius: var(--sketch-border-radius) !important;
+  box-shadow: var(--sketch-shadow) !important;
+  transition: all 0.2s ease-in-out !important;
+  letter-spacing: 1px;
+  font-weight: 600 !important;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--sketch-shadow-hover) !important;
+  }
+  
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #000 !important;
+  }
+}
+
+/* Cards: For the Login/Registration panels */
+.mat-mdc-card {
+  border: var(--sketch-border) !important;
+  border-radius: var(--sketch-border-radius-alt) !important;
+  box-shadow: 8px 8px 0px rgba(0,0,0,0.9) !important;
+  background-color: #ffffff !important;
+}
+
+/* Form Fields: Make inputs look like drawn boxes */
+.mat-mdc-text-field-wrapper {
+  border: var(--sketch-border) !important;
+  border-radius: var(--sketch-border-radius) !important;
+  background-color: #ffffff !important;
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.1) !important;
+}
+
+/* Hide the default strict Material underline to keep the drawn box aesthetic */
+.mdc-line-ripple {
+  display: none !important;
+}
