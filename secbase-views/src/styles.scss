@@ -1,7 +1,7 @@
 /* 1. ANGULAR MATERIAL CORE (Must be first!) */
 @use '@angular/material' as mat;
 /* 2. HAND-DRAWN FONT IMPORT */
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
 
 html {
   height: 100%;
@@ -12,7 +12,7 @@ html {
         tertiary: mat.$orange-palette,
       ),
       // INJECT ILLUSTRATIVE FONT INTO MATERIAL
-      typography: "'Architects Daughter', cursive", 
+      typography: "'Quicksand', cursive",
       density: 0,
     )
   );
@@ -30,9 +30,9 @@ html {
 body {
   color-scheme: light;
   /* Use a slightly textured off-white "paper" background instead of default surface */
-  background-color: #fdfbf7; 
+  background-color: #fdfbf7;
   color: #000;
-  font-family: 'Architects Daughter', cursive;
+  font-family: 'Quicksand', cursive;
   margin: 0;
   height: 100%;
 }
@@ -42,8 +42,8 @@ body {
    ========================================================================== */
 
 /* Buttons: Comic-book solid shadows and irregular borders */
-.mat-mdc-button, 
-.mat-mdc-raised-button, 
+.mat-mdc-button,
+.mat-mdc-raised-button,
 .mat-mdc-unelevated-button,
 .mat-mdc-outlined-button {
   border: var(--sketch-border) !important;
@@ -57,7 +57,7 @@ body {
     transform: translate(-2px, -2px);
     box-shadow: var(--sketch-shadow-hover) !important;
   }
-  
+
   &:active {
     transform: translate(2px, 2px);
     box-shadow: 1px 1px 0px #000 !important;
