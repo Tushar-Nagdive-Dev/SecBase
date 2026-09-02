@@ -1,0 +1,76 @@
+<div class="min-h-screen w-full bg-gradient-to-br from-cyan-100 via-amber-50 to-orange-100 flex flex-col items-center justify-center p-6 md:p-12 overflow-hidden relative">
+  
+  <!-- Sketchy decorative background elements -->
+  <div class="absolute top-10 left-10 text-cyan-300 opacity-50 text-9xl transform -rotate-12 pointer-events-none">#</div>
+  <div class="absolute bottom-10 right-10 text-orange-300 opacity-50 text-9xl transform rotate-12 pointer-events-none">*</div>
+
+  <div class="z-10 max-w-6xl w-full flex flex-col items-center text-center space-y-8 mt-10">
+    
+    <!-- Hero Header -->
+    <h1 class="text-6xl md:text-8xl font-extrabold text-slate-900 tracking-widest drop-shadow-sm">
+      secbase
+    </h1>
+    
+    <!-- Bold Claim -->
+    <p class="text-2xl md:text-4xl text-slate-800 max-w-4xl font-bold leading-relaxed">
+        Total zero-knowledge architecture.<br/>
+        <span class="text-orange-600 underline decoration-wavy decoration-4 underline-offset-8">
+            We couldn't read your secrets even if we tried.
+        </span>
+    </p>
+
+    <!-- Two-Tier Version Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-16 w-full max-w-5xl text-left">
+      
+      <!-- Tier 1: Credential Manager -->
+      <mat-card class="p-8">
+        <mat-card-header class="mb-4">
+          <div mat-card-avatar class="bg-cyan-200 rounded-full border-2 border-black flex items-center justify-center w-12 h-12 text-2xl">
+            👤
+          </div>
+          <mat-card-title class="text-3xl font-bold">Credential Manager</mat-card-title>
+          <mat-card-subtitle class="text-xl text-slate-600 mt-1">For Everyday Security</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="text-xl mt-6">
+          <p class="mb-4">Lock away your personal life with military-grade encryption.</p>
+          <ul class="space-y-3">
+            <li class="flex items-center gap-3"><span>✓</span> Store Credit Cards safely</li>
+            <li class="flex items-center gap-3"><span>✓</span> Manage complex Passwords</li>
+            <li class="flex items-center gap-3"><span>✓</span> Keep Secret Notes hidden</li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Tier 2: Secrets Manager -->
+      <mat-card class="p-8">
+        <mat-card-header class="mb-4">
+          <div mat-card-avatar class="bg-orange-200 rounded-full border-2 border-black flex items-center justify-center w-12 h-12 text-2xl">
+            ⚡
+          </div>
+          <mat-card-title class="text-3xl font-bold">Secrets Manager</mat-card-title>
+          <mat-card-subtitle class="text-xl text-slate-600 mt-1">For Developers & Enterprise</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="text-xl mt-6">
+          <p class="mb-4">Zero-knowledge architecture for your infrastructure.</p>
+          <ul class="space-y-3">
+            <li class="flex items-center gap-3"><span>✓</span> Store critical API Keys</li>
+            <li class="flex items-center gap-3"><span>✓</span> Manage Environment Variables</li>
+            <li class="flex items-center gap-3"><span>✓</span> Developer Tokens & Certs</li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+    <!-- Call to Action Buttons -->
+    <div class="flex flex-col sm:flex-row gap-8 mt-20 mb-10 w-full sm:w-auto">
+      <button mat-raised-button color="primary" class="text-2xl px-12 py-8 w-full sm:w-auto bg-cyan-400" routerLink="/register">
+        ENTER THE BLACKBOX (Sign Up)
+      </button>
+      <button mat-raised-button class="text-2xl px-12 py-8 w-full sm:w-auto bg-white" routerLink="/login">
+        Access Existing (Sign In)
+      </button>
+    </div>
+
+  </div>
+</div>
