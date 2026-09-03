@@ -84,3 +84,12 @@ body {
 .mdc-line-ripple {
   display: none !important;
 }
+
+/* Overrides for our Custom Sketchy Toast */
+.sketchy-toast-container {
+  .mdc-snackbar__surface {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}

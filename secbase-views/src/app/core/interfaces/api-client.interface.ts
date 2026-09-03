@@ -21,5 +21,3 @@ export type ApiParamsValue = string | number | boolean | null | undefined;
 export type ApiParams = HttpParams | Record<string, string>;
 
 export type ApiHeaders = HttpHeaders | Record<string, string>;
-
-

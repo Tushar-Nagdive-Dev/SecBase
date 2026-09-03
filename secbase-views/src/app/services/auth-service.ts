@@ -1,5 +1,7 @@
 import {inject, Service} from '@angular/core';
-import {ApiClient, APIs_PATH, ILoginRequest, IRegisterRequest} from '../core';
+import { ApiClient } from '@core/services/api-client.service';
+import { APIs_PATH } from '@core/constants/api.constants';
+import { ILoginRequest, IRegisterRequest } from '@core/interfaces/auth.interface';
 
 @Service()
 export class AuthService {

@@ -1,0 +1,19 @@
+<div class="flex items-center gap-4 p-4 border-2 border-black shadow-[4px_4px_0px_#000] cursor-pointer transition-colors"
+     [class.bg-cyan-300]="data.type === 'success'"
+     [class.bg-orange-400]="data.type === 'error'"
+     [class.bg-amber-300]="data.type === 'warning'"
+     [class.bg-sky-200]="data.type === 'info'"
+     style="border-radius: var(--sketch-border-radius);"
+     (click)="snackBarRef.dismiss()">
+  
+  <!-- Icon Circle Badge -->
+  <div class="bg-white rounded-full border-2 border-black w-8 h-8 flex items-center justify-center shrink-0">
+    <mat-icon class="text-xl font-bold">{{ icon }}</mat-icon>
+  </div>
+  
+  <!-- Message Text -->
+  <span class="font-bold text-lg text-slate-900 tracking-wide">
+    {{ data.message }}
+  </span>
+
+</div>

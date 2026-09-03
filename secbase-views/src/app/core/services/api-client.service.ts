@@ -1,8 +1,8 @@
 /* ./src/app/core/api-client.service.ts */
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {environment} from '../../environments/environment';
-import {ApiRequestOptions, ApiResponse} from './interfaces/api-client.interface';
+import {environment} from '../../../environments/environment';
+import {ApiRequestOptions, ApiResponse} from '../interfaces/api-client.interface';
 import {Observable} from 'rxjs';
 
 @Injectable({

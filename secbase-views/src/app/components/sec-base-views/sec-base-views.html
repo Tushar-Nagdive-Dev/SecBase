@@ -1,0 +1,167 @@
+<!-- Root Container: Removed font-sans so it inherits Quicksand naturally! -->
+<div class="h-screen w-full flex flex-col bg-[#fdfbf7] text-slate-900 overflow-hidden">
+
+  <!-- ========================================== -->
+  <!-- TOP HEADER & COLLAPSIBLE PANEL             -->
+  <!-- ========================================== -->
+  <header class="w-full bg-white border-b-2 border-black z-20 shadow-[0px_2px_0px_#000] flex flex-col shrink-0">
+    
+    <!-- Permanent Toolbar -->
+    <div class="flex items-center justify-between p-4 h-16">
+      <div class="flex items-center gap-4">
+        <button mat-icon-button (click)="toggleLeft()" class="text-black">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="text-3xl font-black tracking-widest uppercase">SecBase.</span>
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <button mat-icon-button (click)="toggleTop()" class="text-black" title="User Profile & Notifications">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <button mat-icon-button (click)="toggleRight()" class="text-black" title="Toggle PWA View">
+          <mat-icon>devices</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Collapsible Top Panel (Profile / Notifications) -->
+    @if (isTopOpen()) {
+      <div class="w-full bg-cyan-50 border-t-2 border-black p-4 flex gap-8 shadow-inner animate-in slide-in-from-top-4">
+        <div>
+          <h3 class="font-bold text-lg">Current Session</h3>
+          <p class="text-slate-600 font-medium">Logged in as: admin&#64;secbase.org</p>
+        </div>
+        <div>
+          <h3 class="font-bold text-lg">Notifications</h3>
+          <p class="text-slate-600 font-medium">No new alerts.</p>
+        </div>
+        <div class="ml-auto flex items-center">
+          <button mat-button color="warn" class="font-bold">End Session (Lock Vault)</button>
+        </div>
+      </div>
+    }
+  </header>
+
+  <!-- ========================================== -->
+  <!-- MAIN LAYOUT (Left Sidebar, Center, Right)  -->
+  <!-- ========================================== -->
+  <div class="flex flex-1 overflow-hidden relative">
+    
+    <!-- LEFT SIDEBAR (Features) -->
+    @if (isLeftOpen()) {
+      <aside class="w-64 bg-white border-r-2 border-black flex flex-col p-4 gap-2 shrink-0 animate-in slide-in-from-left-8">
+        <h3 class="text-sm font-black text-slate-400 uppercase tracking-wider mb-2">Features</h3>
+        
+        <button mat-button class="justify-start text-left font-bold text-lg w-full bg-slate-100 border-2 border-black shadow-[2px_2px_0px_#000]">
+          <mat-icon class="mr-2">dashboard</mat-icon> Dashboard
+        </button>
+        
+        <button mat-button class="justify-start text-left font-bold text-lg w-full mt-2 hover:bg-slate-100">
+          <mat-icon class="mr-2">vpn_key</mat-icon> Profiles
+        </button>
+
+        <button mat-button class="justify-start text-left font-bold text-lg w-full mt-2 hover:bg-slate-100">
+          <mat-icon class="mr-2">history</mat-icon> Audit Logs
+        </button>
+      </aside>
+    }
+
+    <!-- ========================================== -->
+    <!-- CENTER CONTENT (Cards)                     -->
+    <!-- ========================================== -->
+    <main class="flex-1 overflow-y-auto p-6 md:p-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
+      
+      <div class="max-w-5xl mx-auto flex flex-col gap-8">
+        
+        <!-- ZERO KNOWLEDGE WARNING BANNER -->
+        <div class="bg-orange-100 border-2 border-black p-6 flex gap-4 items-start" style="border-radius: var(--sketch-border-radius); box-shadow: var(--sketch-shadow);">
+          <mat-icon class="text-4xl text-orange-600 shrink-0">warning</mat-icon>
+          <div>
+            <h2 class="text-2xl font-black text-slate-900 mb-2">Absolute Zero-Knowledge Warning</h2>
+            <p class="text-lg text-slate-800 font-medium leading-relaxed">
+              We operate on a strict profile-based architecture. <strong>Each profile has its own unique master password which is used to mathematically decrypt its secrets.</strong> 
+              If you lose a profile's password, the secrets inside it are forever lost. We do not have backdoors. We cannot recover it for you.
+            </p>
+          </div>
+        </div>
+
+        <h1 class="text-4xl font-extrabold text-slate-900 mt-4">Select your Workspace</h1>
+
+        <!-- WORKSPACE CARDS GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          <!-- CREDENTIALS CARD -->
+          <mat-card class="cursor-pointer transition-colors p-2 hover:bg-cyan-50" routerLink="/credentials">
+            <mat-card-header class="mb-4">
+              <div mat-card-avatar class="bg-cyan-200 rounded-full border-2 border-black flex items-center justify-center w-12 h-12 text-2xl shadow-[2px_2px_0px_#000]">
+                👤
+              </div>
+              <mat-card-title class="text-2xl font-bold">Credentials</mat-card-title>
+              <mat-card-subtitle class="text-base text-slate-600 font-bold mt-1">Personal & Everyday Security</mat-card-subtitle>
+            </mat-card-header>
+            
+            <mat-card-content class="mt-4">
+              <div class="flex items-center gap-2 mb-4 text-cyan-800 font-bold bg-cyan-100 inline-block px-3 py-1 rounded-full border-2 border-black shadow-[2px_2px_0px_#000]">
+                <mat-icon class="text-sm scale-75 inline-block -mt-1">folder_shared</mat-icon>
+                {{ credentialsProfileCount() }} Active Profiles
+              </div>
+              <p class="text-slate-700 font-bold text-lg leading-relaxed">
+                Manage personal web passwords, credit cards, and secure notes. Remember: access to each profile requires its specific decryption password.
+              </p>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- SECRETS CARD -->
+          <mat-card class="cursor-pointer transition-colors p-2 hover:bg-orange-50" routerLink="/secrets">
+            <mat-card-header class="mb-4">
+              <div mat-card-avatar class="bg-orange-200 rounded-full border-2 border-black flex items-center justify-center w-12 h-12 text-2xl shadow-[2px_2px_0px_#000]">
+                ⚡
+              </div>
+              <mat-card-title class="text-2xl font-bold">Secrets Manager</mat-card-title>
+              <mat-card-subtitle class="text-base text-slate-600 font-bold mt-1">Enterprise & Developer Keys</mat-card-subtitle>
+            </mat-card-header>
+            
+            <mat-card-content class="mt-4">
+              <div class="flex items-center gap-2 mb-4 text-orange-800 font-bold bg-orange-100 inline-block px-3 py-1 rounded-full border-2 border-black shadow-[2px_2px_0px_#000]">
+                <mat-icon class="text-sm scale-75 inline-block -mt-1">developer_board</mat-icon>
+                {{ secretsProfileCount() }} Active Profiles
+              </div>
+              <p class="text-slate-700 font-bold text-lg leading-relaxed">
+                Manage production API keys, `.env` variables, and CI/CD tokens. Decryption keys are managed strictly per-profile.
+              </p>
+            </mat-card-content>
+          </mat-card>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- RIGHT SIDEBAR (PWA / Live Preview)         -->
+    <!-- ========================================== -->
+    @if (isRightOpen()) {
+      <aside class="w-80 bg-[#fdfbf7] border-l-2 border-black shrink-0 flex flex-col p-4 animate-in slide-in-from-right-8 shadow-[-4px_0px_0px_#000] z-10">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-sm font-black text-slate-500 uppercase tracking-wider">PWA Live View</h3>
+          <button mat-icon-button (click)="toggleRight()" class="text-black scale-75 border-2 border-black shadow-[2px_2px_0px_#000]">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        
+        <!-- Mock Mobile Device Border -->
+        <div class="flex-1 border-4 border-slate-800 rounded-[2rem] bg-white overflow-hidden shadow-xl relative">
+          <!-- Mobile Notch -->
+          <div class="absolute top-0 inset-x-0 h-6 bg-slate-800 rounded-b-xl mx-16"></div>
+          
+          <div class="p-4 pt-10 text-center text-slate-400 font-bold mt-10">
+            <mat-icon class="text-6xl mb-2 opacity-50">smartphone</mat-icon>
+            <p class="text-xl">PWA Extension active.</p>
+            <p class="text-base mt-2 font-medium">Waiting for profile selection...</p>
+          </div>
+        </div>
+      </aside>
+    }
+
+  </div>
+</div>

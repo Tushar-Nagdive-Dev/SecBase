@@ -1,8 +1,9 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Loading } from '@core/components/loading/loading';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, Loading],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',

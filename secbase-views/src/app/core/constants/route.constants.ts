@@ -4,5 +4,9 @@ export const ROUTES_PATHS = Object.freeze({
   AUTH: {
     SIGNING: 'auth/signin',
     SIGNUP: 'auth/signup',
-  }
+    LOGIN: 'login',
+    REGISTER: 'register'
+  },
+
+  SECBASE_VIEW: 'secbase-view',
 });

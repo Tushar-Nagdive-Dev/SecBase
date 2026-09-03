@@ -6,7 +6,9 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {AuthService} from '../../services/auth-service';
-import {ApiResponse, ROUTES_PATHS} from '../../core';
+import { ROUTES_PATHS } from '@core/constants/route.constants';
+import { ToastService } from '@core/services/toast.service';
+import { APP_MESSAGES } from '@core';
 
 @Component({
   imports: [
@@ -27,6 +29,7 @@ export class Register implements OnInit{
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
   ngOnInit(): void {
     this.registerForm = this.fb.group({
@@ -39,16 +42,21 @@ export class Register implements OnInit{
   }
 
   onSubmit() {
-    if (this.registerForm.valid) {
-      this.authService.register(this.registerForm.value).subscribe({
-        next: (response) => {
-          // Route back to sign in after successful registration
-          this.router.navigate([ROUTES_PATHS.AUTH.SIGNING]);
-        },
-        error: (err) => {
-          console.error('Registration failed:', err);
-        }
-      });
+    if (this.registerForm.invalid) {
+      this.toastService.warning(APP_MESSAGES.TOAST_MSG.PLEASE_FILL_ALL_REGISTRATION_REQUIRED_FIELDS);
+      this.registerForm.markAllAsTouched();
+      return;
     }
+
+    this.authService.register(this.registerForm.getRawValue()).subscribe({
+      next: (response) => {
+        this.toastService.success(APP_MESSAGES.TOAST_MSG.BLACK_BOX_INITIALIZED);
+        this.router.navigate([ROUTES_PATHS.AUTH.SIGNING]);
+      },
+      error: (err) => {
+        const errorMsg = err.error?.message || err.message || APP_MESSAGES.TOAST_MSG.REGISTRATION_FAILED;
+        this.toastService.error(errorMsg);
+      }
+    });
   }
 }
