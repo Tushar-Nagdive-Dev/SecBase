@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.secbase.auth.application.IAuthService;
 import org.secbase.auth.application.dtos.LoginRequest;
-import org.secbase.auth.application.dtos.RegisterRequestDto;
+import org.secbase.auth.application.dtos.RegisterRequest;
 import org.secbase.auth.domain.Role;
 import org.secbase.auth.domain.Users;
 import org.secbase.auth.infrastructure.JwtService;
@@ -29,7 +29,7 @@ public class AuthService implements IAuthService {
 
     @Override
     @Transactional
-    public Long register(RegisterRequestDto registerRequest) {
+    public Long register(RegisterRequest registerRequest) {
         log.info("Register request username: {}", registerRequest.username());
 
         if (userRepository.existsByUsername(registerRequest.username())) {

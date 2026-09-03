@@ -3,7 +3,7 @@ package org.secbase.auth.presentation;
 import lombok.RequiredArgsConstructor;
 import org.secbase.auth.application.IAuthService;
 import org.secbase.auth.application.dtos.LoginRequest;
-import org.secbase.auth.application.dtos.RegisterRequestDto;
+import org.secbase.auth.application.dtos.RegisterRequest;
 import org.secbase.common.presentation.ApiResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -27,7 +27,7 @@ public class AuthController {
     private final IAuthService authService;
 
     @PostMapping(REGISTER)
-    public ResponseEntity<ApiResponse<Map<String, Long>>> register(@RequestBody RegisterRequestDto request) {
+    public ResponseEntity<ApiResponse<Map<String, Long>>> register(@RequestBody RegisterRequest request) {
         Long userId = authService.register(request);
         return ResponseEntity.ok(ApiResponse.success(REGISTRATION_SUCCESSFUL, Map.of("userId", userId)));
     }
