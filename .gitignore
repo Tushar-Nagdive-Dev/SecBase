@@ -43,3 +43,4 @@ node_modules
 .angular
 dist
 package-lock.json
+logs

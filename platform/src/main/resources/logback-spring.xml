@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Define the log output directory (creates a 'logs' folder at the root of your project) -->
+    <property name="LOG_PATH" value="./logs" />
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %-5level %logger{36} - %msg%n" />
+    <!-- ========================================== -->
+    <!-- 1. APPENDERS (Where the logs physically go)-->
+    <!-- ========================================== -->
+
+    <!-- CONSOLE APPENDER (For local development viewing) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- APP FILE APPENDER (For org.secbase code) -->
+    <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/secbase-app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/secbase-app-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory> <!-- Keep 30 days of logs -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- SPRING FILE APPENDER (For org.springframework code) -->
+    <appender name="SPRING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/secbase-spring.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/secbase-spring-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- SQL FILE APPENDER (For database queries) -->
+    <appender name="SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/secbase-sql.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/secbase-sql-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- ========================================== -->
+    <!-- 2. LOGGERS (Routing traffic to the appenders)-->
+    <!-- ========================================== -->
+
+    <!-- Route YOUR custom SECBASE Application Code -->
+    <logger name="org.secbase" level="INFO" additivity="false">
+        <appender-ref ref="APP_FILE" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <!-- Route Spring Framework core logs -->
+    <logger name="org.springframework" level="INFO" additivity="false">
+        <appender-ref ref="SPRING_FILE" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <!-- Route Spring Data JDBC SQL Queries -->
+    <!-- DEBUG shows the actual SQL string -->
+    <logger name="org.springframework.jdbc.core.JdbcTemplate" level="DEBUG" additivity="false">
+        <appender-ref ref="SQL_FILE" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <!-- TRACE shows the parameter values bound to the SQL query (e.g., username/email) -->
+    <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE" additivity="false">
+        <appender-ref ref="SQL_FILE" />
+        <!-- Intentionally not sending parameters to CONSOLE to keep dev logs clean -->
+    </logger>
+
+    <!-- ========================================== -->
+    <!-- 3. ROOT LOGGER (The Catch-All)             -->
+    <!-- ========================================== -->
+    <!-- Catches third-party libraries like HikariCP, Tomcat, Auth0 JWT, etc. -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="SPRING_FILE" />
+    </root>
+
+</configuration>

@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 import static org.secbase.common.constants.SecBaseApplicationConstants.*;
 
 @Component
@@ -35,11 +37,13 @@ public class AuditEntityInterceptor implements BeforeConvertCallback<BaseEntity>
             aggregate.setCreatedBy(currentSystem);
             aggregate.setCreatedId(currentPrincipalId);
             aggregate.setCreator(currentPrincipalName);
+            aggregate.setCreatedTime(Instant.now());
         }
 
         aggregate.setModifiedBy(currentSystem);
         aggregate.setModifiedId(currentPrincipalId);
         aggregate.setModifier(currentPrincipalName);
+        aggregate.setModifiedTime(Instant.now());
         return aggregate;
     }
 }
