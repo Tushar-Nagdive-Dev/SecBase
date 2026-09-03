@@ -25,19 +25,22 @@ export class SecBaseViews implements OnInit {
   readonly secretsProfileCount = signal<number>(4);
 
   ngOnInit(): void {
-    
+
   }
 
-  toggleLeft() { 
-    this.isLeftOpen.update(v => !v); 
+  toggleLeft() {
+    this.isLeftOpen.update(v => !v);
   }
 
-  toggleRight() { 
-    this.isRightOpen.update(v => !v); 
+  toggleRight() {
+    this.isRightOpen.update(v => !v);
   }
 
-  toggleTop() { 
-    this.isTopOpen.update(v => !v); 
+  toggleTop() {
+    this.isTopOpen.update(v => !v);
   }
 
+  onLogout() {
+
+  }
 }

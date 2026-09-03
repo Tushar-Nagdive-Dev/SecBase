@@ -7,7 +7,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {AuthService} from '../../services/auth-service';
 import { ToastService } from '@core/services/toast.service';
-import { APP_MESSAGES } from '@core';
+import {AuthStateService} from '@core/services/auth-state.service';
+import {APP_MESSAGES} from '@core/constants/app-message.constants';
+import {ROUTES_PATHS} from '@core/constants/route.constants';
 
 @Component({
   imports: [
@@ -28,6 +30,7 @@ export class Login implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly authState = inject(AuthStateService);
   private readonly toastService = inject(ToastService);
 
   ngOnInit(): void {
@@ -47,8 +50,11 @@ export class Login implements OnInit {
     this.authService.login(this.loginForm.getRawValue()).subscribe({
       next: (response) => {
         this.toastService.success(response.message || APP_MESSAGES.TOAST_MSG.ACCESS_GRANTED);
-        // Direct to main vault/dashboard
-        this.router.navigate(['/dashboard']);
+        // 1. CRITICAL: Tell the AuthGuard you are logged in BEFORE navigating!
+        this.authState.setAuthenticated(true);
+
+        // 2. Navigate using an absolute path (leading slash)
+        this.router.navigate(['/' + ROUTES_PATHS.SECBASE_VIEW]);
       },
       error: (err) => {
         const errorMsg = err.error?.message || err.message || APP_MESSAGES.TOAST_MSG.FAILED_TO_AUTHENTICATE;
