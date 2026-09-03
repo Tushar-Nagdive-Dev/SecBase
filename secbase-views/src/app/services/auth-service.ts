@@ -14,4 +14,8 @@ export class AuthService {
   register(payload: IRegisterRequest) {
     return this.apiClient.post<{ userId: number}, IRegisterRequest>(APIs_PATH.AUTH.REGISTER, payload, {withCredentials: true});
   }
+
+  logout() {
+    return this.apiClient.post<void>(APIs_PATH.AUTH.LOGOUT, {}, {withCredentials: true});
+  }
 }

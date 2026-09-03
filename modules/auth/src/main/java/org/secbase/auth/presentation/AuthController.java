@@ -8,17 +8,13 @@ import org.secbase.common.presentation.ApiResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 import static org.secbase.common.constants.SecBaseApplicationConstants.*;
 import static org.secbase.common.constants.SecBaseApplicationConstants.ApiConstants.*;
-import static org.secbase.common.constants.SecBaseApplicationMSGConstants.SuccessMsg.LOGIN_SUCCESSFUL;
-import static org.secbase.common.constants.SecBaseApplicationMSGConstants.SuccessMsg.REGISTRATION_SUCCESSFUL;
+import static org.secbase.common.constants.SecBaseApplicationMSGConstants.SuccessMsg.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,11 +35,21 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(false)
                 .path(FORWARD_SLASH)
-                .maxAge(24*60*60)
+                .maxAge(COOKIE_MAX_AGE)
                 .sameSite(STRICT)
                 .build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .body(ApiResponse.success(LOGIN_SUCCESSFUL));
+    }
+
+    @PostMapping(LOGOUT)
+    public ResponseEntity<ApiResponse<Void>> logout() {
+        ResponseCookie deleteCookie = ResponseCookie.from(SECBASE_ACCESS_TOKEN, EMPTY_STRING)
+                .httpOnly(true).secure(false).path(FORWARD_SLASH)
+                .maxAge(ZERO).sameSite(STRICT).build();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .body(ApiResponse.success(SECBASE_LOGOUT));
     }
 }

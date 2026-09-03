@@ -23,6 +23,7 @@ public final class SecBaseApplicationMSGConstants {
 
         public static final String REGISTRATION_SUCCESSFUL = "Registration successful";
         public static final String LOGIN_SUCCESSFUL = "Login successful";
+        public static final String SECBASE_LOGOUT = "SecBase locked and session terminated.";
     }
 
 }
