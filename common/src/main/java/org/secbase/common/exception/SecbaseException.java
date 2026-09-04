@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 public class SecbaseException extends RuntimeException {
     private final HttpStatus status;
 
-    protected SecbaseException(String message, HttpStatus status) {
+    public SecbaseException(String message, HttpStatus status) {
         super(message);
         this.status = status;
     }

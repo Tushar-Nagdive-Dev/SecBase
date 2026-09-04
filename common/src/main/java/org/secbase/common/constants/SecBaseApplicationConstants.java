@@ -20,6 +20,7 @@ public final class SecBaseApplicationConstants {
         public static final String SWAGGER_UI_HTML = "/swagger-ui.html";
         public static final String AUTH_PATH = "api/v1/auth";
         public static final String ADMIN_PATH = "api/v1/admin";
+        public static final String CREDENTIALS_PATH = "api/v1/credentials";
     }
 
     public static final int COOKIE_MAX_AGE = 24*60*60;
@@ -39,4 +40,5 @@ public final class SecBaseApplicationConstants {
     public static final String EMAIL = "email";
     public static final String ROLES = "roles";
     public static final String ADMIN = "ADMIN";
+    public static final String PROFILES = "profiles";
 }

@@ -4,6 +4,7 @@ export const SecBaseAppConstants = Object.freeze({
   APP_VERSION: '0.0.1',
   ANY: '**',
   FULL: 'full',
+  EMPTY_STRING: '',
 
   PAGINATION : {
     DEFAULT_PAGE_SIZE: 20,
@@ -23,8 +24,7 @@ export const SecBaseAppConstants = Object.freeze({
   TITLES: {
     SIGN_IN: 'SECBASE | Sign In',
     SIGN_UP: 'SECBASE | Register',
-    SECBASE_HOME: 'Secbase Home | Zero-Knowledge Black Box',
+    SECBASE_HOME: 'SecBase Home | Zero-Knowledge Black Box',
     SECBASE_VIEWS: 'SecBase View | Dashboard'
   }
-
 });
