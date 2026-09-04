@@ -12,6 +12,7 @@ export * from './services/toast.service'
 export * from './services/loading.service'
 export * from './services/auth-state.service'
 export * from './services/crypto.service'
+export * from './services/enclave-state.service'
 
 /* Core Interfaces */
 export * from './interfaces/api-client.interface'

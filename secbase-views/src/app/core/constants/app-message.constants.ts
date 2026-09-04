@@ -7,6 +7,8 @@ export const APP_MESSAGES = Object.freeze({
         PLEASE_ENTER_BOTH_YOUR_IDENTIFIER_AND_MASTER_PASSWORD: 'Please enter both your identifier and master password.',
         ACCESS_GRANTED: 'Access granted. Welcome back!',
         FAILED_TO_AUTHENTICATE: 'Failed to authenticate.',
-        SECBASE_SYSTEM_LOGOUT: 'SecBase System Logout Successfully'
+        SECBASE_SYSTEM_LOGOUT: 'SecBase System Logout Successfully',
+        ENCLAVE_IS_CURRENTLY_LOCKED: 'Enclave is currently locked. No cryptographic key in memory.',
+        ENCLAVE_AUTO_LOCK_DUE_TO_INACTIVITY: 'Enclave auto-locked due to inactivity.'
     }
 });
