@@ -6,12 +6,14 @@ import {CredentialApiService} from '../../services/credential-api-service';
 import {CredentialType} from '../../interfaces/credential.interface';
 import {firstValueFrom} from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { SecurePasswordInput } from '../secure-password-input/secure-password-input';
 
 @Component({
   imports: [
     CommonModule, 
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    SecurePasswordInput
   ],
   selector: 'sec-credential-creation',
   styleUrl: './credential-creation.scss',
@@ -40,7 +42,6 @@ export class CredentialCreation implements OnInit {
       description: [''],
       isFavorite: [false],
 
-      // LOGIN Payload
       login: this.formBuilder.group({
         url: [''],
         loginId: [''],
@@ -49,7 +50,6 @@ export class CredentialCreation implements OnInit {
         totpSeed: ['']
       }),
 
-      // CARD Payload
       card: this.formBuilder.group({
         cardholderName: [''],
         maskedNumber: [''],
@@ -61,7 +61,6 @@ export class CredentialCreation implements OnInit {
         pin: ['']
       }),
 
-      // NOTE Payload
       note: this.formBuilder.group({
         noteType: ['SECURE_TEXT'],
         content: ['']
@@ -107,7 +106,6 @@ export class CredentialCreation implements OnInit {
           }
           break;
         case 'CARD':
-          // Auto-generate a masked number for the UI to display safely (e.g., **** 1234)
           const fullNum = rawData.card?.number || '';
           const masked = fullNum.length >= 4 ? `**** **** **** ${fullNum.slice(-4)}` : '';
           payload.card = {

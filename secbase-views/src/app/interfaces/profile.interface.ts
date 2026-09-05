@@ -14,6 +14,7 @@ export interface IProfileResponse {
   icon: string;
   color: string;
   cryptoSalt: string;
+  cryptoVerifier: string;
 }
 
 export type ViewMode = 'CARD' | 'TABLE' | 'BUBBLE';

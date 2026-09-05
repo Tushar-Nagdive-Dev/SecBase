@@ -1,4 +1,4 @@
-import {Component, computed, OnInit, signal, WritableSignal} from '@angular/core';
+import {Component, computed, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {HasValuePipe} from '../../common/pipes/has-value-pipe';
@@ -16,6 +16,7 @@ import {ProfileApiService} from '../../services/profile-api-service';
 import {Router, RouterModule} from '@angular/router';
 import {IProfileResponse, ViewMode} from '../../interfaces/profile.interface';
 import {CredentialBaseResponse} from '../../interfaces/credential.interface';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   imports: [
@@ -68,11 +69,12 @@ export class EnclaveLobby implements OnInit {
   async fetchProfiles() {
     this.loading.show();
     try {
-      const res = await this.profileApi.getProfiles().toPromise();
+      const res = await firstValueFrom(this.profileApi.getProfiles());
       if (hasValue(res) && hasValue(res.data)) this.profiles.set(res.data);
-      this.loading.hide();
     } catch (error) {
-      this.toastService.error(APP_MESSAGES.TOAST_MSG.FAILED_TO_FETCH_PROFILES+error);
+      this.toastService.error(APP_MESSAGES.TOAST_MSG.FAILED_TO_FETCH_PROFILES + error);
+    } finally {
+      this.loading.hide();
     }
   }
 
@@ -89,30 +91,47 @@ export class EnclaveLobby implements OnInit {
   async fetchCredentials(profileId: number) {
     this.loading.show();
     try {
-      const res = await this.credentialApi.getBaseCredentials(profileId).toPromise();
+      const res = await firstValueFrom(this.credentialApi.getBaseCredentials(profileId));
       if (hasValue(res) && hasValue(res.data)) {
         this.credentials.set(res.data);
       }
     } catch (error) {
-      this.toastService.error(APP_MESSAGES.TOAST_MSG.FAILED_TO_FETCH_PROFILES+error);
+      this.toastService.error(APP_MESSAGES.TOAST_MSG.FAILED_TO_FETCH_PROFILES + error);
     } finally {
       this.loading.hide();
     }
   }
 
   async attemptUnlock() {
-    this.loading.show();
     const profile = this.activeProfile();
-    if(!profile || !this.unLockPassword()) return;
+    if (!profile || !this.unLockPassword()) return;
 
     this.isUnlocking.set(true);
+    this.loading.show();
+    
     try {
-      const keys = await this.cryptoService.deriveEnclaveKeys(this.unLockPassword());
+      // 1. Locally derive keys using salt
+      const keys = await this.cryptoService.deriveEnclaveKeys(this.unLockPassword(), profile.cryptoSalt);
+      
+      // 2. Validate verifier hash
+      if (keys.verifierBase64 !== profile.cryptoVerifier) {
+        throw new Error('Master password verification failed');
+      }
+
+      // 3. Unlock enclave state into RAM
       this.enclaveState.lock();
       this.enclaveState.unlock(profile.id, keys.aesKey);
       this.unLockPassword.set('');
+      
+      // 4. Fetch the credential items
       await this.fetchCredentials(profile.id);
-    }catch (error) {
+
+      // 5. Explicitly update the browser URL to match the active profile path 
+      // This ensures your route parameter stays in sync with the unlocked session
+      this.route.navigate(['/enclave', profile.id]);
+
+      this.toastService.success('Enclave unlocked successfully');
+    } catch (error) {
       this.toastService.error(APP_MESSAGES.TOAST_MSG.UNLOCK_FAILED);
     } finally {
       this.isUnlocking.set(false);
@@ -120,12 +139,16 @@ export class EnclaveLobby implements OnInit {
     }
   }
 
-  setViewMode(mode: ViewMode) {
-    this.viewMode.set(mode);
+  openCredential(credId: number) {
+    const profileId = this.activeProfile()?.id;
+    if (profileId) {
+      // Navigates cleanly to your credential detail/decrypt view using absolute path parameters
+      this.route.navigate(['/enclave', profileId, 'item', credId]);
+    }
   }
 
-  openCredential(credId: number) {
-    this.route.navigate(['/enclave/item', credId]);
+  setViewMode(mode: ViewMode) {
+    this.viewMode.set(mode);
   }
 
   safeCompare(value1: any, value2: any): boolean {
