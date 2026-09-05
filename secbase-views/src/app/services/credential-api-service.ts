@@ -35,6 +35,6 @@ export class CredentialApiService {
   }
 
   createCredential(profileId: number | string, payload: CreateCredentialRequest): Observable<ApiResponse<CredentialDetailResponse>> {
-    return this.apiClient.post<CredentialDetailResponse, CreateCredentialRequest>(APIs_PATH.CREDENTIALS.CREATE_CREDENTIAL_BY_PROFILE_ID(profileId));
+    return this.apiClient.post<CredentialDetailResponse, CreateCredentialRequest>(APIs_PATH.CREDENTIALS.CREATE_CREDENTIAL_BY_PROFILE_ID(profileId), payload);
   }
 }

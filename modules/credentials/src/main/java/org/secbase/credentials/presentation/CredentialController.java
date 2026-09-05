@@ -31,7 +31,7 @@ public class CredentialController {
     }
 
     @GetMapping("{credentialId}")
-    public ResponseEntity<ApiResponse<CredentialDetailResponse>> getCredentialDetail(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable("profileId") Long credentialId) {
+    public ResponseEntity<ApiResponse<CredentialDetailResponse>> getCredentialDetail(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable("credentialId") Long credentialId) {
         CredentialDetailResponse detail = this.credentialService.getCredentialDetail(principal.getId(), credentialId);
         return ResponseEntity.ok(ApiResponse.success(CREDENTIAL_DETAILS_RETRIEVED_SUCCESSFULLY, detail));
     }
@@ -43,7 +43,7 @@ public class CredentialController {
     }
 
     @PutMapping("{credentialId}")
-    public ResponseEntity<ApiResponse<CredentialDetailResponse>> updateCredential(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable("profileId") Long credentialId, @RequestBody UpdateCredentialRequest request) {
+    public ResponseEntity<ApiResponse<CredentialDetailResponse>> updateCredential(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable("credentialId") Long credentialId, @RequestBody UpdateCredentialRequest request) {
         CredentialDetailResponse detail = this.credentialService.updateCredential(principal.getId(), credentialId, request);
         return ResponseEntity.ok(ApiResponse.success(CREDENTIAL_UPDATED, detail));
     }

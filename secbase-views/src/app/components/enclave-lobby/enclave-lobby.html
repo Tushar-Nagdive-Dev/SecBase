@@ -55,12 +55,20 @@
           <h2 class="text-4xl font-black uppercase mb-2 truncate">{{ activeProfile()?.name }}</h2>
           <p class="text-gray-700 font-bold text-lg mb-8">Enter your master password to mount enclave keys into RAM.</p>
 
-          <input type="password" [ngModel]="unLockPassword()" (ngModelChange)="unLockPassword.set($event)"
-                 (keydown.enter)="attemptUnlock()" placeholder="Master Password"
-                 class="w-full border-4 border-black p-4 text-2xl font-black text-center mb-6 focus:outline-none focus:bg-yellow-50 focus:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all">
+          <input
+            type="password"
+            [value]="unLockPassword()"
+            (input)="unLockPassword.set($any($event.target).value)"
+            (keydown.enter)="attemptUnlock()"
+            placeholder="Master Password"
+            class="w-full border-4 border-black p-4 text-2xl font-black text-center mb-6 focus:outline-none focus:bg-yellow-50 focus:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all"
+          >
 
-          <button (click)="attemptUnlock()" [disabled]="isUnlocking()"
-                  class="w-full bg-cyan-400 border-4 border-black p-4 text-2xl font-black uppercase hover:translate-x-1 hover:translate-y-1 hover:shadow-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50">
+          <button
+            (click)="attemptUnlock()"
+            [disabled]="isUnlocking()"
+            class="w-full bg-cyan-400 border-4 border-black p-4 text-2xl font-black uppercase hover:translate-x-1 hover:translate-y-1 hover:shadow-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50"
+          >
             {{ isUnlocking() ? 'Deriving Keys...' : 'Mount Enclave' }}
           </button>
         </div>
@@ -222,7 +230,7 @@
                     </div>
                     <div class="border-4 border-black p-4 bg-yellow-100">
                       <label class="block font-black uppercase mb-2">Secure Password</label>
-                      <app-secure-password-input formControlName="password"></app-secure-password-input>
+                      <sec-secure-password-input formControlName="password"></sec-secure-password-input>
                     </div>
                   </div>
                 }
