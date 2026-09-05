@@ -32,25 +32,9 @@ export const routes: Routes = [
   // ==========================================
   // ZERO-KNOWLEDGE ENCLAVE ROUTES
   // ==========================================
-  {
-    path: ROUTES_PATHS.PROFILES.NEW,
-    canActivate: [authGuard],
-    loadComponent: () => import('./components/profile-creation/profile-creation').then(m => m.ProfileCreation),
-    title: SecBaseAppConstants.TITLES.INITIALIZE_ENCLAVE
-  },
-  {
-    path: ROUTES_PATHS.ENCLAVE.LOBBY,
-    canActivate: [authGuard],
-    loadComponent: () => import('./components/enclave-lobby/enclave-lobby').then(m => m.EnclaveLobby),
-    title: SecBaseAppConstants.TITLES.ENCLAVE_LIST
-  },
-  {
-    // Same component as LOBBY, but allows us to auto-select a profile via the URL param
-    path: ROUTES_PATHS.ENCLAVE.LOBBY_WITH_PROFILE,
-    canActivate: [authGuard],
-    loadComponent: () => import('./components/enclave-lobby/enclave-lobby').then(m => m.EnclaveLobby),
-    title: SecBaseAppConstants.TITLES.ENCLAVE_LIST
-  },
+  // ==========================================
+  // ZERO-KNOWLEDGE ENCLAVE ROUTES (Specific first!)
+  // ==========================================
   {
     path: ROUTES_PATHS.ENCLAVE.ITEM_NEW,
     canActivate: [authGuard],
@@ -62,6 +46,24 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./components/credential-details/credential-details').then(m => m.CredentialDetails),
     title: SecBaseAppConstants.TITLES.DECRYPT_SECRET
+  },
+  {
+    path: ROUTES_PATHS.PROFILES.NEW,
+    canActivate: [authGuard],
+    loadComponent: () => import('./components/profile-creation/profile-creation').then(m => m.ProfileCreation),
+    title: SecBaseAppConstants.TITLES.INITIALIZE_ENCLAVE
+  },
+  {
+    path: ROUTES_PATHS.ENCLAVE.LOBBY_WITH_PROFILE,
+    canActivate: [authGuard],
+    loadComponent: () => import('./components/enclave-lobby/enclave-lobby').then(m => m.EnclaveLobby),
+    title: SecBaseAppConstants.TITLES.ENCLAVE_LIST
+  },
+  {
+    path: ROUTES_PATHS.ENCLAVE.LOBBY,
+    canActivate: [authGuard],
+    loadComponent: () => import('./components/enclave-lobby/enclave-lobby').then(m => m.EnclaveLobby),
+    title: SecBaseAppConstants.TITLES.ENCLAVE_LIST
   },
 
   // ==========================================

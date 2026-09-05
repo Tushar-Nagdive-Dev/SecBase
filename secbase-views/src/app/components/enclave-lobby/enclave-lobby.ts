@@ -1,7 +1,13 @@
-import {Component, computed, OnInit, signal} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import {HasValuePipe} from '../../common/pipes/has-value-pipe';
+import { Component, computed, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  FormGroup,
+} from '@angular/forms';
+import { HasValuePipe } from '../../common/pipes/has-value-pipe';
 import {
   APP_MESSAGES,
   CryptoService,
@@ -9,40 +15,50 @@ import {
   hasValue,
   LoadingService,
   safeCompare,
-  ToastService
+  ToastService,
 } from '@core';
-import {CredentialApiService} from '../../services/credential-api-service';
-import {ProfileApiService} from '../../services/profile-api-service';
-import {Router, RouterModule} from '@angular/router';
-import {IProfileResponse, ViewMode} from '../../interfaces/profile.interface';
-import {CredentialBaseResponse} from '../../interfaces/credential.interface';
-import {firstValueFrom} from 'rxjs';
+import { CredentialApiService } from '../../services/credential-api-service';
+import { ProfileApiService } from '../../services/profile-api-service';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { IProfileResponse, ViewMode } from '../../interfaces/profile.interface';
+import { CredentialBaseResponse, CredentialType } from '../../interfaces/credential.interface';
+import { firstValueFrom } from 'rxjs';
+import { SecurePasswordInput } from '../secure-password-input/secure-password-input';
+
+type LobbyWorkspaceMode = 'LIST' | 'CREATE' | 'DETAIL';
 
 @Component({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     HasValuePipe,
-    RouterModule
+    RouterModule,
+    SecurePasswordInput,
   ],
   selector: 'sec-enclave-lobby',
   styleUrl: './enclave-lobby.scss',
   templateUrl: './enclave-lobby.html',
 })
 export class EnclaveLobby implements OnInit {
-
+  // Core state signals
   profiles = signal<IProfileResponse[]>([]);
   activeProfile = signal<IProfileResponse | null>(null);
+  workspaceMode = signal<LobbyWorkspaceMode>('LIST');
   viewMode = signal<ViewMode>('CARD');
 
   credentials = signal<CredentialBaseResponse[]>([]);
   unLockPassword = signal('');
   isUnlocking = signal<boolean>(false);
 
+  // Creation form state
+  selectedCredentialType = signal<CredentialType>('LOGIN');
+  credentialForm!: FormGroup;
   isCurrentProfileUnlocked = computed(() => {
     const selected = this.activeProfile();
     const unlockId = this.enclaveState.currentProfileId();
-    return hasValue(selected) && safeCompare(unlockId, selected.id);
+    // Coerce both to Numbers to prevent string vs number comparison bugs
+    return hasValue(selected) && Number(unlockId) === Number(selected.id);
   });
 
   constructor(
@@ -51,19 +67,48 @@ export class EnclaveLobby implements OnInit {
     private credentialApi: CredentialApiService,
     private profileApi: ProfileApiService,
     private route: Router,
+    private activatedRoute: ActivatedRoute,
     private toastService: ToastService,
-    private loading: LoadingService,
+    public loading: LoadingService,
+    private fb: FormBuilder,
   ) {}
 
   async ngOnInit() {
+    this.credentialForm = this.fb.group({
+      name: ['', Validators.required],
+      type: ['LOGIN' as CredentialType, Validators.required],
+      description: [''],
+      isFavorite: [false],
+      login: this.fb.group({ url: [''], loginId: [''], password: [''], pin: [''], totpSeed: [''] }),
+      card: this.fb.group({
+        cardholderName: [''],
+        number: [''],
+        cardBrand: ['VISA'],
+        expiryMonth: [''],
+        expiryYear: [''],
+        cvv: [''],
+        pin: [''],
+      }),
+      note: this.fb.group({ noteType: ['SECURE_TEXT'], content: [''] }),
+    });
+
     await this.fetchProfiles();
-    const unlockedId = this.enclaveState.currentProfileId();
-    if (unlockedId) {
-      const profile = this.profiles().find(profile => safeCompare(profile.id, unlockedId));
-      if (hasValue(profile)) {
-        this.selectProfile(profile);
+
+    // Reactively watch URL route parameter changes
+    this.activatedRoute.paramMap.subscribe((params) => {
+      const routeProfileId = Number(params.get('profileId'));
+      if (routeProfileId && this.profiles().length > 0) {
+        const found = this.profiles().find((p) => safeCompare(p.id, routeProfileId));
+        if (hasValue(found) && this.activeProfile()?.id !== found.id) {
+          this.selectProfile(found);
+        }
       }
-    }
+    });
+
+    // Sub-mode switch listener for creation panel
+    this.credentialForm.get('type')?.valueChanges.subscribe((val) => {
+      if (val) this.selectedCredentialType.set(val as CredentialType);
+    });
   }
 
   async fetchProfiles() {
@@ -81,7 +126,8 @@ export class EnclaveLobby implements OnInit {
   selectProfile(profile: IProfileResponse) {
     this.activeProfile.set(profile);
     this.unLockPassword.set('');
-    if(this.isCurrentProfileUnlocked()) {
+    this.workspaceMode.set('LIST');
+    if (this.isCurrentProfileUnlocked()) {
       this.fetchCredentials(profile.id);
     } else {
       this.credentials.set([]);
@@ -94,9 +140,11 @@ export class EnclaveLobby implements OnInit {
       const res = await firstValueFrom(this.credentialApi.getBaseCredentials(profileId));
       if (hasValue(res) && hasValue(res.data)) {
         this.credentials.set(res.data);
+      } else {
+        this.credentials.set([]);
       }
     } catch (error) {
-      this.toastService.error(APP_MESSAGES.TOAST_MSG.FAILED_TO_FETCH_PROFILES + error);
+      this.credentials.set([]);
     } finally {
       this.loading.hide();
     }
@@ -108,28 +156,20 @@ export class EnclaveLobby implements OnInit {
 
     this.isUnlocking.set(true);
     this.loading.show();
-    
     try {
-      // 1. Locally derive keys using salt
-      const keys = await this.cryptoService.deriveEnclaveKeys(this.unLockPassword(), profile.cryptoSalt);
-      
-      // 2. Validate verifier hash
+      const keys = await this.cryptoService.deriveEnclaveKeys(
+        this.unLockPassword(),
+        profile.cryptoSalt,
+      );
       if (keys.verifierBase64 !== profile.cryptoVerifier) {
         throw new Error('Master password verification failed');
       }
 
-      // 3. Unlock enclave state into RAM
       this.enclaveState.lock();
       this.enclaveState.unlock(profile.id, keys.aesKey);
       this.unLockPassword.set('');
-      
-      // 4. Fetch the credential items
       await this.fetchCredentials(profile.id);
-
-      // 5. Explicitly update the browser URL to match the active profile path 
-      // This ensures your route parameter stays in sync with the unlocked session
       this.route.navigate(['/enclave', profile.id]);
-
       this.toastService.success('Enclave unlocked successfully');
     } catch (error) {
       this.toastService.error(APP_MESSAGES.TOAST_MSG.UNLOCK_FAILED);
@@ -139,16 +179,87 @@ export class EnclaveLobby implements OnInit {
     }
   }
 
-  openCredential(credId: number) {
+  setWorkspaceMode(mode: LobbyWorkspaceMode) {
+    this.workspaceMode.set(mode);
+  }
+
+  setCredentialType(type: CredentialType) {
+    this.credentialForm.patchValue({ type });
+  }
+
+  async onSaveCredential() {
+    if (this.credentialForm.invalid) return;
     const profileId = this.activeProfile()?.id;
-    if (profileId) {
-      // Navigates cleanly to your credential detail/decrypt view using absolute path parameters
-      this.route.navigate(['/enclave', profileId, 'item', credId]);
+    if (!profileId) return;
+
+    this.loading.show();
+    try {
+      const aesKey = this.enclaveState.getHotKey();
+      const rawData = this.credentialForm.value;
+      const encrypt = async (text?: string | null) =>
+        text ? await this.cryptoService.encrypt(text, aesKey) : undefined;
+
+      const payload: any = {
+        name: rawData.name,
+        type: rawData.type,
+        description: rawData.description,
+        isFavorite: rawData.isFavorite,
+      };
+
+      switch (rawData.type) {
+        case 'LOGIN':
+          payload.login = {
+            url: rawData.login?.url,
+            loginId: rawData.login?.loginId,
+            encryptedPassword: await encrypt(rawData.login?.password),
+            encryptedPin: await encrypt(rawData.login?.pin),
+            encryptedTotpSeed: await encrypt(rawData.login?.totpSeed),
+          };
+          break;
+        case 'CARD':
+          const fullNum = rawData.card?.number || '';
+          const masked = fullNum.length >= 4 ? `**** **** **** ${fullNum.slice(-4)}` : '';
+          payload.card = {
+            cardholderName: rawData.card?.cardholderName,
+            maskedNumber: masked,
+            cardBrand: rawData.card?.cardBrand,
+            expiryMonth: rawData.card?.expiryMonth,
+            expiryYear: rawData.card?.expiryYear,
+            encryptedNumber: await encrypt(fullNum),
+            encryptedCvv: await encrypt(rawData.card?.cvv),
+            encryptedPin: await encrypt(rawData.card?.pin),
+          };
+          break;
+        case 'NOTE':
+          payload.note = {
+            noteType: rawData.note?.noteType,
+            encryptedContent: await encrypt(rawData.note?.content),
+          };
+          break;
+      }
+
+      await firstValueFrom(this.credentialApi.createCredential(profileId, payload));
+      this.toastService.success('Secret encrypted and sealed!');
+      this.credentialForm.reset({
+        type: 'LOGIN',
+        isFavorite: false,
+        card: { cardBrand: 'VISA' },
+        note: { noteType: 'SECURE_TEXT' },
+      });
+      this.workspaceMode.set('LIST');
+      await this.fetchCredentials(profileId);
+    } catch (error) {
+      this.toastService.error('Failed to encrypt or save data.');
+    } finally {
+      this.loading.hide();
     }
   }
 
-  setViewMode(mode: ViewMode) {
-    this.viewMode.set(mode);
+  openCredential(credId: number) {
+    const profileId = this.activeProfile()?.id;
+    if (profileId) {
+      this.route.navigate(['/enclave', profileId, 'item', credId]);
+    }
   }
 
   safeCompare(value1: any, value2: any): boolean {
