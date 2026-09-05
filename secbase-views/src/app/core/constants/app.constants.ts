@@ -5,6 +5,7 @@ export const SecBaseAppConstants = Object.freeze({
   ANY: '**',
   FULL: 'full',
   EMPTY_STRING: '',
+  CHARACTER_SECRET: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=",
 
   PAGINATION : {
     DEFAULT_PAGE_SIZE: 20,
@@ -25,6 +26,10 @@ export const SecBaseAppConstants = Object.freeze({
     SIGN_IN: 'SECBASE | Sign In',
     SIGN_UP: 'SECBASE | Register',
     SECBASE_HOME: 'SecBase Home | Zero-Knowledge Black Box',
-    SECBASE_VIEWS: 'SecBase View | Dashboard'
+    SECBASE_VIEWS: 'SecBase View | Dashboard',
+    INITIALIZE_ENCLAVE: 'Initialize Enclave | SecBase',
+    ENCLAVE_LIST: 'Enclave List | SecBase',
+    STORE_CREDENTIAL: 'Store Credentials | SecBase',
+    DECRYPT_SECRET: 'Decrypt Secret | SecBase'
   }
 });

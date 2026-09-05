@@ -1,0 +1,173 @@
+<div class="min-h-screen bg-gray-50 flex font-sans text-black overflow-hidden">
+
+  <!-- ========================================== -->
+  <!-- SIDEBAR: Profile Selector                  -->
+  <!-- ========================================== -->
+  <aside class="w-80 bg-white border-r-8 border-black flex flex-col shadow-[8px_0px_0px_0px_rgba(0,0,0,1)] z-10">
+    <div class="p-6 border-b-8 border-black bg-cyan-400">
+      <h1 class="text-4xl font-black uppercase tracking-tighter">Enclaves</h1>
+    </div>
+
+    <div class="p-4 flex-1 overflow-y-auto space-y-4">
+      @for (profile of profiles(); track profile.id) {
+      <button (click)="selectProfile(profile)"
+              [class.bg-yellow-300]="activeProfile()?.id === profile.id"
+              [class.translate-x-2]="activeProfile()?.id === profile.id"
+              [class.shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]]="activeProfile()?.id !== profile.id"
+              class="w-full text-left p-4 border-4 border-black hover:bg-yellow-200 hover:translate-x-1 transition-all bg-white group flex items-center gap-4">
+
+        <div class="w-6 h-6 rounded-full border-2 border-black" [style.backgroundColor]="profile.color"></div>
+        <span class="font-black text-xl uppercase truncate group-hover:text-black">{{ profile.name }}</span>
+
+        <!-- Show an open lock emoji if this specific profile is mounted in RAM -->
+        @if (safeCompare(enclaveState.currentProfileId(), profile.id)) {
+          <span class="ml-auto text-lg">🔓</span>
+        }
+      </button>
+      }
+
+      <button routerLink="/profiles/new" class="w-full p-4 border-4 border-black border-dashed bg-gray-100 hover:bg-cyan-100 font-black uppercase text-center mt-6 transition-colors">
+        + Add Enclave
+      </button>
+    </div>
+  </aside>
+
+  <!-- ========================================== -->
+  <!-- MAIN PANEL: Vault Contents                 -->
+  <!-- ========================================== -->
+  <main class="flex-1 flex flex-col relative bg-gray-100 h-screen overflow-hidden">
+
+    <!-- STATE 1: NO PROFILE SELECTED -->
+    @if (!activeProfile()) {
+    <div class="flex-1 flex items-center justify-center p-8 text-center opacity-50">
+      <h2 class="text-4xl font-black uppercase text-gray-400">Select an Enclave to Mount</h2>
+    </div>
+    }
+
+    <!-- STATE 2: PROFILE SELECTED BUT LOCKED -->
+    @if (activeProfile() && !isCurrentProfileUnlocked()) {
+    <div class="absolute inset-0 bg-yellow-400/20 backdrop-blur-md flex items-center justify-center p-8 z-20">
+      <div class="bg-white border-8 border-black p-10 max-w-lg w-full shadow-[16px_16px_0px_0px_rgba(0,0,0,1)]">
+
+        <div class="inline-block bg-red-500 text-white font-black uppercase border-4 border-black px-4 py-2 mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+          Vault Locked
+        </div>
+
+        <h2 class="text-4xl font-black uppercase mb-2">{{ activeProfile()?.name }}</h2>
+        <p class="text-gray-700 font-bold text-lg mb-8">Mount this enclave into memory to view credentials.</p>
+
+        <input type="password" [ngModel]="unLockPassword()" (ngModelChange)="unLockPassword.set($event)"
+               (keydown.enter)="attemptUnlock()" placeholder="Master Password"
+               class="w-full border-4 border-black p-4 text-2xl font-black text-center mb-6 focus:outline-none focus:ring-0 focus:-translate-y-1 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+
+        <button (click)="attemptUnlock()" [disabled]="isUnlocking()"
+                class="w-full bg-cyan-400 border-4 border-black p-4 text-2xl font-black uppercase hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50">
+          {{ isUnlocking() ? 'Decrypting...' : 'Unlock Enclave' }}
+        </button>
+      </div>
+    </div>
+    }
+
+    <!-- STATE 3: PROFILE SELECTED AND UNLOCKED -->
+    @if (activeProfile() && isCurrentProfileUnlocked()) {
+    <div class="p-10 flex-1 overflow-y-auto">
+
+      <!-- Header & View Toggles -->
+      <div class="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-10 border-b-8 border-black pb-6 gap-6">
+        <div>
+          <h2 class="text-6xl font-black uppercase tracking-tighter">{{ activeProfile()?.name }}</h2>
+          <div class="flex items-center gap-4 mt-4">
+            <span class="bg-black text-white px-3 py-1 font-bold text-sm uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]">Active in RAM</span>
+            <button (click)="enclaveState.lock()" class="text-red-600 font-black text-sm uppercase border-b-2 border-red-600 hover:text-red-800 transition-colors">Eject Vault</button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="flex bg-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+            <button (click)="setViewMode('CARD')" [class.bg-black]="viewMode() === 'CARD'" [class.text-white]="viewMode() === 'CARD'" class="px-6 py-3 font-black uppercase border-r-4 border-black hover:bg-gray-200 transition-colors">Card</button>
+            <button (click)="setViewMode('TABLE')" [class.bg-black]="viewMode() === 'TABLE'" [class.text-white]="viewMode() === 'TABLE'" class="px-6 py-3 font-black uppercase border-r-4 border-black hover:bg-gray-200 transition-colors">Table</button>
+            <button (click)="setViewMode('BUBBLE')" [class.bg-black]="viewMode() === 'BUBBLE'" [class.text-white]="viewMode() === 'BUBBLE'" class="px-6 py-3 font-black uppercase hover:bg-gray-200 transition-colors">Bubble</button>
+          </div>
+
+          <button class="bg-magenta-400 border-4 border-black p-3 text-xl font-black uppercase hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all">
+            + New
+          </button>
+        </div>
+      </div>
+
+      <!-- SIGNAL-DRIVEN VIEW ENGINE -->
+      @switch (viewMode()) {
+
+      <!-- VIEW: CARD -->
+      @case ('CARD') {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        @for (item of credentials(); track item.id) {
+        <div (click)="openCredential(item.id)"
+             class="bg-white border-4 border-black p-6 cursor-pointer shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] transition-all flex flex-col h-48 group">
+
+          <div class="flex justify-between items-start mb-4">
+            <span class="bg-cyan-200 px-3 py-1 border-2 border-black font-black text-xs uppercase">{{ item.type }}</span>
+            @if (item.isFavorite) { <span class="text-2xl drop-shadow-md">⭐</span> }
+          </div>
+
+          <h3 class="text-2xl font-black uppercase mb-2 truncate group-hover:text-cyan-600">{{ item.name }}</h3>
+
+          @if (item.description | hasValue) {
+          <p class="font-bold text-gray-500 text-sm mt-auto pt-4 border-t-2 border-black border-dashed truncate">{{ item.description }}</p>
+          }
+        </div>
+        }
+      </div>
+      }
+
+      <!-- VIEW: TABLE -->
+      @case ('TABLE') {
+      <div class="bg-white border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+        <table class="w-full text-left border-collapse">
+          <thead>
+          <tr class="bg-yellow-300 border-b-4 border-black">
+            <th class="p-4 font-black uppercase border-r-4 border-black w-16 text-center">Fav</th>
+            <th class="p-4 font-black uppercase border-r-4 border-black">Name</th>
+            <th class="p-4 font-black uppercase border-r-4 border-black w-32">Type</th>
+            <th class="p-4 font-black uppercase">Description</th>
+          </tr>
+          </thead>
+          <tbody>
+          @for (item of credentials(); track item.id) {
+          <tr (click)="openCredential(item.id)" class="border-b-4 border-black last:border-0 hover:bg-cyan-100 cursor-pointer transition-colors">
+            <td class="p-4 border-r-4 border-black text-center text-xl">{{ item.isFavorite ? '⭐' : '' }}</td>
+            <td class="p-4 border-r-4 border-black font-black text-xl">{{ item.name }}</td>
+            <td class="p-4 border-r-4 border-black font-bold text-sm bg-gray-50">{{ item.type }}</td>
+            <td class="p-4 text-gray-600 font-bold truncate max-w-sm">{{ item.description }}</td>
+          </tr>
+          }
+          </tbody>
+        </table>
+      </div>
+      }
+
+      <!-- VIEW: BUBBLE -->
+      @case ('BUBBLE') {
+      <div class="flex flex-wrap gap-10 mt-8">
+        @for (item of credentials(); track item.id) {
+        <div (click)="openCredential(item.id)" class="flex flex-col items-center gap-4 group cursor-pointer w-28">
+          <div class="w-24 h-24 bg-white border-4 border-black rounded-full shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-3 group-hover:shadow-[6px_18px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center text-4xl relative">
+            @if (item.type === 'LOGIN') { 🔑 }
+            @if (item.type === 'CARD') { 💳 }
+            @if (item.type === 'NOTE') { 📝 }
+
+            @if (item.isFavorite) {
+            <span class="absolute -top-2 -right-2 text-xl drop-shadow-md">⭐</span>
+            }
+          </div>
+          <span class="font-black text-sm uppercase text-center truncate w-full group-hover:text-magenta-600">{{ item.name }}</span>
+        </div>
+        }
+      </div>
+      }
+      } 
+      <!-- End Switch -->
+       </div>
+      }
+  </main>
+</div>

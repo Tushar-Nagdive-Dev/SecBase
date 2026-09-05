@@ -1,0 +1,64 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+
+  <!-- Neo-Brutalist Container -->
+  <div class="bg-white border-4 border-black p-8 w-full max-w-2xl shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+
+    <div class="border-b-4 border-black pb-4 mb-8">
+      <h1 class="text-4xl font-black uppercase tracking-tight">Initialize Enclave</h1>
+      <p class="text-lg font-bold text-gray-600 mt-2">Set up your zero-knowledge vault.</p>
+    </div>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-8">
+
+      <!-- Profile Name -->
+      <div>
+        <label class="block text-xl font-black uppercase mb-2">Enclave Name</label>
+        <input type="text" formControlName="name" placeholder="e.g. Personal Vault"
+               class="w-full border-4 border-black p-4 text-lg font-bold focus:outline-none focus:ring-0 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:-translate-y-1 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+      </div>
+
+      <!-- Theme Color Selector -->
+      <div>
+        <label class="block text-xl font-black uppercase mb-2">Identifier Color</label>
+        <div class="flex gap-4">
+          @for (color of colors; track color) {
+          <button type="button"
+                  (click)="selectColor(color)"
+                  [style.backgroundColor]="color"
+                  [class.shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]]="profileForm.value.color === color"
+                  [class.-translate-y-1]="profileForm.value.color === color"
+                  class="w-16 h-16 border-4 border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+          </button>
+          }
+        </div>
+      </div>
+
+      <!-- Master Password -->
+      <div class="bg-yellow-100 border-4 border-black p-6 relative">
+        <div class="absolute -top-4 -right-4 bg-red-500 text-white font-black uppercase border-4 border-black px-3 py-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          Zero-Knowledge
+        </div>
+        <label class="block text-xl font-black uppercase mb-2 text-black">Master Password</label>
+        <p class="text-sm font-bold mb-4 text-gray-800">Must be at least 12 characters. We cannot recover this if lost.</p>
+
+        <input type="password" formControlName="masterPassword" placeholder="••••••••••••"
+               class="w-full border-4 border-black p-4 text-2xl font-black tracking-widest focus:outline-none focus:ring-0 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:-translate-y-1 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-white">
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit"
+              [disabled]="profileForm.invalid || isProcessing"
+              class="w-full bg-cyan-400 border-4 border-black p-5 text-2xl font-black uppercase tracking-widest hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+        {{ isProcessing ? 'Deriving Keys...' : 'Initialize' }}
+      </button>
+
+    </form>
+  </div>
+
+  <!-- Hidden PDF Generation Template -->
+  <sec-recovery-pdf-template
+    [profileName]="profileForm.value.name || 'Unnamed'"
+    [masterPassword]="profileForm.value.masterPassword || ''">
+  </sec-recovery-pdf-template>
+
+</div>

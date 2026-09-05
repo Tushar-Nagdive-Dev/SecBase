@@ -9,4 +9,13 @@ export const ROUTES_PATHS = Object.freeze({
   },
 
   SECBASE_VIEW: 'secbase-view',
+  PROFILES: {
+    NEW: 'profiles/new'
+  },
+  ENCLAVE: {
+    LOBBY: 'enclave',
+    LOBBY_WITH_PROFILE: 'enclave/:profileId',
+    ITEM_NEW: 'enclave/:profileId/item/new',
+    ITEM_DETAIL: 'enclave/:profileId/item/:id'
+  }
 });

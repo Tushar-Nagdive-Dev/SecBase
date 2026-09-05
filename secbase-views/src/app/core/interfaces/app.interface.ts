@@ -10,4 +10,11 @@ export interface IEnclaveKeys {
   verifierBase64: string;
 }
 
+export interface SafeCompareOptions {
+  strict?: boolean;
+  caseSensitive?: boolean;
+}
+
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
+
+export type ZeroKnowledgeAction = 'ACKNOWLEDGED' | 'DOWNLOAD';

@@ -21,6 +21,8 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/secbase-views",
+            "index": "src/index.html",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -30,7 +32,10 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/tailwind.css", "src/styles.scss"]
+            "styles": ["src/tailwind.css", "src/styles.scss"],
+            "allowedCommonJsDependencies": [
+              "html2canvas", "canvg", "core-js", "raf", "rgbcolor"
+            ]
           },
           "configurations": {
             "production": {

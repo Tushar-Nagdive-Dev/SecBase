@@ -13,6 +13,7 @@ export * from './services/loading.service'
 export * from './services/auth-state.service'
 export * from './services/crypto.service'
 export * from './services/enclave-state.service'
+export * from './services/dialog.service'
 
 /* Core Interfaces */
 export * from './interfaces/api-client.interface'
@@ -25,3 +26,7 @@ export * from './components/loading/loading';
 
 /* Core Guards */
 export * from './guards/auth-guard';
+
+/* Core utils */
+export * from './utils/has-value.util'
+export * from './utils/safe-compare.util'
