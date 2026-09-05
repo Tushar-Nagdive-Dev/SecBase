@@ -61,6 +61,25 @@ export class EnclaveLobby implements OnInit {
     return hasValue(selected) && Number(unlockId) === Number(selected.id);
   });
 
+  readonly expiryMonths = [
+    { value: '01', label: '01 - January' },
+    { value: '02', label: '02 - February' },
+    { value: '03', label: '03 - March' },
+    { value: '04', label: '04 - April' },
+    { value: '05', label: '05 - May' },
+    { value: '06', label: '06 - June' },
+    { value: '07', label: '07 - July' },
+    { value: '08', label: '08 - August' },
+    { value: '09', label: '09 - September' },
+    { value: '10', label: '10 - October' },
+    { value: '11', label: '11 - November' },
+    { value: '12', label: '12 - December' },
+  ];
+
+  readonly expiryYears = Array.from({ length: 25 }, (_, i) =>
+    (new Date().getFullYear() + i).toString(),
+  );
+
   constructor(
     protected enclaveState: EnclaveStateService,
     private cryptoService: CryptoService,

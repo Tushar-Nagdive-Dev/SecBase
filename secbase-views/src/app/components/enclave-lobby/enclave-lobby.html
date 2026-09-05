@@ -78,7 +78,7 @@
     <!-- STATE 3: PROFILE UNLOCKED - WORKSPACE ENGINE -->
     @if (activeProfile() && isCurrentProfileUnlocked()) {
       <div class="p-8 flex-1 overflow-y-auto flex flex-col">
-        
+
         <!-- Header & Navigation Bar -->
         <div class="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-8 border-b-8 border-black pb-6 gap-6">
           <div>
@@ -251,11 +251,44 @@
                           <option value="VISA">Visa</option>
                           <option value="MASTERCARD">Mastercard</option>
                           <option value="AMEX">Amex</option>
+                          <option value="DISCOVER">Discover</option>
                         </select>
                       </div>
+
                       <div class="col-span-12">
                         <label class="block font-black uppercase mb-2">Cardholder Name</label>
-                        <input type="text" formControlName="cardholderName" class="w-full border-4 border-black p-3 uppercase font-bold bg-white focus:outline-none">
+                        <input type="text" formControlName="cardholderName" placeholder="JOHN DOE" class="w-full border-4 border-black p-3 uppercase font-bold bg-white focus:outline-none">
+                      </div>
+
+                      <!-- Exp Month Selector (Dynamic from TS) -->
+                      <div class="col-span-4">
+                        <label class="block font-black uppercase mb-2">Exp Month</label>
+                        <select formControlName="expiryMonth" class="w-full border-4 border-black p-3 font-mono font-bold bg-white focus:outline-none uppercase">
+                          <option value="" disabled selected>MM</option>
+                          @for (m of expiryMonths; track m.value) {
+                            <option [value]="m.value">{{ m.label }}</option>
+                          }
+                        </select>
+                      </div>
+
+                      <!-- Exp Year Selector (Dynamic from TS) -->
+                      <div class="col-span-4">
+                        <label class="block font-black uppercase mb-2">Exp Year</label>
+                        <select formControlName="expiryYear" class="w-full border-4 border-black p-3 font-mono font-bold bg-white focus:outline-none uppercase">
+                          <option value="" disabled selected>YYYY</option>
+                          @for (year of expiryYears; track year) {
+                            <option [value]="year">{{ year }}</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="col-span-4">
+                        <label class="block font-black uppercase mb-2">CVV</label>
+                        <input type="password" formControlName="cvv" placeholder="123" maxlength="4" class="w-full border-4 border-black p-3 font-mono font-bold bg-white focus:outline-none">
+                      </div>
+
+                      <div class="col-span-12">
+                        <label class="block font-black uppercase mb-2">Card PIN</label>
+                        <input type="password" formControlName="pin" placeholder="PIN" class="w-full border-4 border-black p-3 font-mono font-bold bg-white focus:outline-none">
                       </div>
                     </div>
                   </div>
