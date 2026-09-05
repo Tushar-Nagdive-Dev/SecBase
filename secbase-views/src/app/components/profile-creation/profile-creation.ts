@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {RecoveryPdfTemplateComponent} from '../../common/recovery-pdf-template/recovery-pdf-template.component';
-import {Router} from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import {CryptoService} from '@core/services/crypto.service';
 import {ProfileApiService} from '../../services/profile-api-service';
 import {DialogService, EnclaveStateService, hasValue, ToastService} from '@core';
@@ -13,7 +13,8 @@ import {firstValueFrom} from 'rxjs';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RecoveryPdfTemplateComponent
+    RecoveryPdfTemplateComponent,
+    RouterModule
 ],
   selector: 'sec-profile-creation',
   styleUrl: './profile-creation.scss',
@@ -76,7 +77,7 @@ export class ProfileCreation implements OnInit {
         icon: formVals.icon!,
         color: formVals.color!,
         cryptoSalt: keys.saltBase64,
-        verifierHash: keys.verifierBase64
+        cryptoVerifier: keys.verifierBase64
       };
 
       const response = await firstValueFrom(this.profileApi.createProfile(requestPayload));

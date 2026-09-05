@@ -25,25 +25,25 @@ public class CredentialController {
     private final ICredentialService credentialService;
 
     @GetMapping("{profileId}/items")
-    public ResponseEntity<ApiResponse<List<CredentialBaseResponse>>> getBaseCredentials(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable Long profileId) {
+    public ResponseEntity<ApiResponse<List<CredentialBaseResponse>>> getBaseCredentials(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable("profileId") Long profileId) {
         List<CredentialBaseResponse> items = this.credentialService.getBaseCredentials(principal.getId(), profileId);
         return ResponseEntity.ok(ApiResponse.success(CREDENTIAL_LIST_RETRIEVED_SUCCESSFULLY, items));
     }
 
     @GetMapping("{credentialId}")
-    public ResponseEntity<ApiResponse<CredentialDetailResponse>> getCredentialDetail(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable Long credentialId) {
+    public ResponseEntity<ApiResponse<CredentialDetailResponse>> getCredentialDetail(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable("profileId") Long credentialId) {
         CredentialDetailResponse detail = this.credentialService.getCredentialDetail(principal.getId(), credentialId);
         return ResponseEntity.ok(ApiResponse.success(CREDENTIAL_DETAILS_RETRIEVED_SUCCESSFULLY, detail));
     }
 
     @PostMapping("{profileId}/items")
-    public ResponseEntity<ApiResponse<CredentialDetailResponse>> createCredential(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable Long profileId, @RequestBody CreateCredentialRequest request) {
+    public ResponseEntity<ApiResponse<CredentialDetailResponse>> createCredential(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable("profileId") Long profileId, @RequestBody CreateCredentialRequest request) {
         CredentialDetailResponse detail = this.credentialService.createCredential(principal.getId(), profileId, request);
         return ResponseEntity.ok(ApiResponse.success(CREDENTIAL_SECURELY_STORED, detail));
     }
 
     @PutMapping("{credentialId}")
-    public ResponseEntity<ApiResponse<CredentialDetailResponse>> updateCredential(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable Long credentialId, @RequestBody UpdateCredentialRequest request) {
+    public ResponseEntity<ApiResponse<CredentialDetailResponse>> updateCredential(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable("profileId") Long credentialId, @RequestBody UpdateCredentialRequest request) {
         CredentialDetailResponse detail = this.credentialService.updateCredential(principal.getId(), credentialId, request);
         return ResponseEntity.ok(ApiResponse.success(CREDENTIAL_UPDATED, detail));
     }

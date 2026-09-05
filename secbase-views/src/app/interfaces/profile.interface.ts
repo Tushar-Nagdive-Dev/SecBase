@@ -5,7 +5,7 @@ export interface ICreateProfileRequest {
   icon: string;
   color: string;
   cryptoSalt: string;
-  verifierHash: string;
+  cryptoVerifier: string;
 }
 
 export interface IProfileResponse {

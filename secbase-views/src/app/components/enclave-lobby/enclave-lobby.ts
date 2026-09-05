@@ -13,7 +13,7 @@ import {
 } from '@core';
 import {CredentialApiService} from '../../services/credential-api-service';
 import {ProfileApiService} from '../../services/profile-api-service';
-import {Router} from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import {IProfileResponse, ViewMode} from '../../interfaces/profile.interface';
 import {CredentialBaseResponse} from '../../interfaces/credential.interface';
 
@@ -21,7 +21,8 @@ import {CredentialBaseResponse} from '../../interfaces/credential.interface';
   imports: [
     CommonModule,
     FormsModule,
-    HasValuePipe
+    HasValuePipe,
+    RouterModule
   ],
   selector: 'sec-enclave-lobby',
   styleUrl: './enclave-lobby.scss',
@@ -100,6 +101,7 @@ export class EnclaveLobby implements OnInit {
   }
 
   async attemptUnlock() {
+    this.loading.show();
     const profile = this.activeProfile();
     if(!profile || !this.unLockPassword()) return;
 
@@ -109,10 +111,12 @@ export class EnclaveLobby implements OnInit {
       this.enclaveState.lock();
       this.enclaveState.unlock(profile.id, keys.aesKey);
       this.unLockPassword.set('');
+      await this.fetchCredentials(profile.id);
     }catch (error) {
       this.toastService.error(APP_MESSAGES.TOAST_MSG.UNLOCK_FAILED);
     } finally {
       this.isUnlocking.set(false);
+      this.loading.hide();
     }
   }
 
