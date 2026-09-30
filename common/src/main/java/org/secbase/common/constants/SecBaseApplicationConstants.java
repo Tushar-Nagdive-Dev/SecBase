@@ -14,6 +14,9 @@ public final class SecBaseApplicationConstants {
         public static final String REGISTER = "register";
         public static final String LOGIN = "login";
         public static final String LOGOUT = "logout";
+        public static final String TAXONOMY = "taxonomy";
+        public static final String PROFILE = "profile";
+        public static final String PROFILE_WITH_ID = "profile/{id}";
 
         public static final String V3_API_DOCS = "/v3/api-docs/**";
         public static final String SWAGGER_V3_API_DOCS = "/swagger-ui/**";
@@ -21,6 +24,7 @@ public final class SecBaseApplicationConstants {
         public static final String AUTH_PATH = "api/v1/auth";
         public static final String ADMIN_PATH = "api/v1/admin";
         public static final String CREDENTIALS_PATH = "api/v1/credentials";
+        public static final String SECRETS_PATH = "api/v1/secrets";
     }
 
     public static final int COOKIE_MAX_AGE = 24*60*60;
@@ -41,4 +45,7 @@ public final class SecBaseApplicationConstants {
     public static final String ROLES = "roles";
     public static final String ADMIN = "ADMIN";
     public static final String PROFILES = "profiles";
+    public static final String ACTIVE = "ACTIVE";
+    public static final String REVOKED = "REVOKED";
+    public static final String DELETED = "DELETED";
 }
