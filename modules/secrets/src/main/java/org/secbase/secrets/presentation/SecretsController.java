@@ -58,7 +58,7 @@ public class SecretsController {
     }
 
     @DeleteMapping(PROFILE_WITH_ID)
-    public ResponseEntity<ApiResponse<Void>> deactiveProfile(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deactivateProfile(@AuthenticationPrincipal SecbasePrincipal principal, @PathVariable Long id) {
         this.secretsProfileService.deactivateProfile(principal.getId(), id);
         return ResponseEntity.ok(ApiResponse.success(SECRETS_PROFILE_DEACTIVATED_SUCCESSFULLY, null));
     }
