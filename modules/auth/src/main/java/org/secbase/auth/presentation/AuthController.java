@@ -25,7 +25,7 @@ public class AuthController {
     @PostMapping(REGISTER)
     public ResponseEntity<ApiResponse<Map<String, Long>>> register(@RequestBody RegisterRequest request) {
         Long userId = authService.register(request);
-        return ResponseEntity.ok(ApiResponse.success(REGISTRATION_SUCCESSFUL, Map.of("userId", userId)));
+        return ResponseEntity.ok(ApiResponse.success(REGISTRATION_SUCCESSFUL, Map.of(USER_ID, userId)));
     }
 
     @PostMapping(LOGIN)

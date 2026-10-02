@@ -48,4 +48,5 @@ public final class SecBaseApplicationConstants {
     public static final String ACTIVE = "ACTIVE";
     public static final String REVOKED = "REVOKED";
     public static final String DELETED = "DELETED";
+    public static final String USER_ID = "user_id";
 }
