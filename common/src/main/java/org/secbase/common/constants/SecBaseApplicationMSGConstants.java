@@ -21,6 +21,8 @@ public final class SecBaseApplicationMSGConstants {
         public static final String CREDENTIAL_NOT_FOUND = "Credential not found";
         public static final String SECRETS_PROFILE_NOT_FOUND_OR_INACTIVE = "Secrets profile not found or inactive.";
         public static final String PROFILE_WITH_SAME_NAME_EXISTS = "A profile with the name %s already exists.";
+        public static final String LOAD_SQL_QUERY_STRING_MSG = "Failed to load sql query : %s";
+        public static final String SECRET_NAME_ALREADY_EXISTS_WITHIN_ENVIRONMENT = "A secret with this name already exists in the selected environment.";
     }
 
     public static final class SuccessMsg {
@@ -41,6 +43,7 @@ public final class SecBaseApplicationMSGConstants {
         public static final String SECRETES_PROFILE_CREATED_SUCCESSFULLY = "Secrets Profile created successfully";
         public static final String SECRETES_PROFILE_UPDATED_SUCCESSFULLY = "Secrets Profile updated successfully";
         public static final String SECRETS_PROFILE_DEACTIVATED_SUCCESSFULLY = "Profile deactivated successfully";
+        public static final String SECRETS_CREATED_SUCCESSFULLY = "Secret created successfully";
     }
 
 }
